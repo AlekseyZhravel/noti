@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:test_project/components/custom_button.dart';
+import 'package:test_project/shared_widgets/custom_button.dart';
 import 'package:test_project/constants.dart';
 import 'package:test_project/screens/create_noti/components/select_icon.dart';
 import 'package:test_project/screens/create_noti/create_noti_controller.dart';

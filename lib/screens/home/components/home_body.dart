@@ -2,8 +2,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:test_project/components/custom_button.dart';
-import 'package:test_project/components/notification_card.dart';
+import 'package:test_project/shared_widgets/custom_button.dart';
+import 'package:test_project/shared_widgets/notification_card.dart';
 import 'package:test_project/constants.dart';
 import 'package:test_project/screens/home/home_controller.dart';
 import 'package:test_project/screens/select_trigger/select_trigger_screen.dart';

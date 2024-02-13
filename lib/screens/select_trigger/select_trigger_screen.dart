@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:test_project/components/custom_button.dart';
+import 'package:test_project/shared_widgets/custom_button.dart';
 import 'package:test_project/constants.dart';
 import 'package:test_project/screens/select_trigger/components/select_trigger_body.dart';
 import 'package:test_project/screens/select_trigger/triggers_controller.dart';

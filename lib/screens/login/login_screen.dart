@@ -1,12 +1,14 @@
 // ignore_for_file: use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:test_project/constants.dart';
+import 'package:test_project/screens/login/bloc/login_bloc.dart';
 import 'package:test_project/screens/login/components/login_body.dart';
 import 'package:test_project/screens/login/login_controller.dart';
 
-class LoginScreen extends GetView<LoginController> {
+class LoginScreen extends StatelessWidget {
   static const String routeName = '/login';
 
   @override
@@ -23,7 +25,10 @@ class LoginScreen extends GetView<LoginController> {
           style: kAppBarTextStyle,
         ),
       ),
-      body: LoginBody(),
+      body: BlocProvider(
+        create: (context) => LoginScreenBloc(),
+        child: LoginBody(),
+      ),
     );
   }
 }

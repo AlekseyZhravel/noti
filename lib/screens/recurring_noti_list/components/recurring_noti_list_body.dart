@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:test_project/components/custom_button.dart';
-import 'package:test_project/components/notification_card.dart';
+import 'package:test_project/shared_widgets/custom_button.dart';
+import 'package:test_project/shared_widgets/notification_card.dart';
 import 'package:test_project/screens/recurring_noti_list/recurring_noti_list_controller.dart';
 import 'package:test_project/screens/select_trigger/select_trigger_screen.dart';
 

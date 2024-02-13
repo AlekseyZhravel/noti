@@ -1,15 +1,28 @@
 // ignore_for_file: use_key_in_widget_constructors, deprecated_member_use
 
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:test_project/components/custom_button.dart';
+import 'package:intl/intl.dart';
+import 'package:test_project/screens/login/bloc/login_bloc.dart';
+import 'package:test_project/screens/login/login_screen_constant.dart';
+import 'package:test_project/shared_widgets/custom_button.dart';
 import 'package:test_project/constants.dart';
-import 'package:test_project/screens/login/login_controller.dart';
+import 'package:test_project/shared_widgets/otp_form_widget.dart';
 
-class LoginBody extends GetView<LoginController> {
+class LoginBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final LoginScreenBloc bloc = BlocProvider.of<LoginScreenBloc>(context);
+
+    Timer timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      bloc.add(UpdateTimeEvent(currentTime: DateTime.now()));
+    });
+
+    bool isCurrentPassword = true;
+    bool isActiveButton = false;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -18,123 +31,57 @@ class LoginBody extends GetView<LoginController> {
         ),
         const Text(
           'Log In',
-          style: TextStyle(
-            color: kAppBarColor,
-            fontSize: 24,
-            height: 1.5,
-            fontWeight: FontWeight.w700,
-          ),
+          style: kTitleTextStyle,
         ),
         const SizedBox(
           height: 16.0,
         ),
         const Text(
           'Enter current time in hh : mm format',
-          style: TextStyle(
-            color: Color(0xFF747377),
-            fontSize: 16,
-            height: 1.5,
-            fontWeight: FontWeight.w400,
-          ),
+          style: kDescriptionTextStyle,
         ),
         const SizedBox(
           height: 42.0,
         ),
-        GetBuilder<LoginController>(
-          id: 'time',
-          builder: (_) {
+        BlocBuilder<LoginScreenBloc, LoginScreenState>(
+          builder: (context, state) {
+            if (state is CurrentTimeState) {
+              return Text(
+                DateFormat.Hm().format(state.currentTime),
+                style: kLoginTimeTextStyle,
+              );
+            }
+
             return Text(
-              controller.currentTime,
-              style: const TextStyle(
-                color: kAppBarColor,
-                fontSize: 32,
-                height: 1.5,
-                fontWeight: FontWeight.w700,
-              ),
+              DateFormat.Hm().format(DateTime.now()),
+              style: kLoginTimeTextStyle,
             );
           },
         ),
         const SizedBox(
           height: 42.0,
         ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: List.generate(
-            controller.textEditingControllers.length,
-            (index) => Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 48.0,
-                  margin: const EdgeInsets.symmetric(horizontal: 6.0),
-                  child: TextFormField(
-                    controller: controller.textEditingControllers[index],
-                    focusNode: controller.focusNodes[index],
-                    scrollPadding: EdgeInsets.zero,
-                    maxLength: 1,
-                    style: const TextStyle(
-                      color: kAppBarColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16.0,
-                    ),
-                    autofocus: true,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    cursorWidth: 2,
-                    cursorHeight: 26,
-                    cursorRadius: const Radius.circular(2),
-                    cursorColor: kAppBarColor,
-                    decoration: InputDecoration(
-                      counterText: '',
-                      contentPadding: EdgeInsets.only(
-                          left: controller.focusNodes[index].hasFocus ? 1 : 3),
-                      fillColor: Colors.white,
-                      enabledBorder: kLogInOtpBorder,
-                      errorBorder: kLogInOtpBorder,
-                      focusedBorder: kLogInOtpBorderFocus,
-                      focusedErrorBorder: kLogInOtpBorder,
-                    ),
-                    onTapOutside: (tap) {
-                      FocusScope.of(context).unfocus();
-                    },
-                    onChanged: (value) {
-                      controller.otpLogic(context, index, value);
-                    },
-                  ),
-                ),
-                index == 1
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 6.0),
-                        child: Text(
-                          ':',
-                          style: TextStyle(
-                            color: kGrayColor,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 32.0,
-                            // height: 1.5,
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
-              ],
-            ),
-          ),
+        OtpFormWidget(
+          onChanged: (otpValue) {
+            bloc.add(EnterPasswordEvent(otpValue));
+          },
         ),
         const Spacer(),
-        GetBuilder<LoginController>(
-          id: 'button',
-          builder: (_) {
-            return SafeArea(
-              child: Column(
-                children: [
-                  Visibility(
-                    visible: !controller.otpValidate &&
-                        controller.otp.last.isNotEmpty,
+        SafeArea(
+          child: Column(
+            children: [
+              BlocBuilder<LoginScreenBloc, LoginScreenState>(
+                builder: (context, state) {
+                  if (state is PasswordState) {
+                    isCurrentPassword = state.isPasswordTrue;
+                    print(isCurrentPassword);
+                  }
+                  return Visibility(
+                    visible: !isCurrentPassword,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 12.0),
-                      width: Get.width,
+                      width: double.infinity,
                       color: kDividerColor2,
                       child: Row(
                         children: [
@@ -147,37 +94,41 @@ class LoginBody extends GetView<LoginController> {
                           ),
                           const Text(
                             'The time is wrong. Try again.',
-                            style: TextStyle(
-                              color: kRedColor,
-                              fontSize: 14,
-                              height: 1.5,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: kErrorTextStyle,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 32.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: CustomButton(
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 32.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: BlocBuilder<LoginScreenBloc, LoginScreenState>(
+                  builder: (context, state) {
+                    if (state is ConfirmButtonState) {
+                      isActiveButton = state.isConfirmLogin;
+                    }
+
+                    return CustomButton(
                       text: 'Confirm',
                       onPressed: () {
-                        controller.login();
+                        // login();
+                        timer.cancel();
                       },
-                      isActive: controller.otpValidate,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                ],
+                      isActive: isActiveButton,
+                    );
+                  },
+                ),
               ),
-            );
-          },
+              const SizedBox(
+                height: 15.0,
+              ),
+            ],
+          ),
         )
       ],
     );
