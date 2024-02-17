@@ -6,8 +6,8 @@ part 'login_state.dart';
 class LoginScreenBloc extends Bloc<LoginScreenEvent, LoginScreenState> {
   LoginScreenBloc() : super(CurrentTimeState(DateTime.now())) {
     on<UpdateTimeEvent>(_currentTimeEvent);
-    on<EnterPasswordEvent>(_enteringPasswordEvent);
-    on<ConfirmLoginEvent>(_confirmLoginEvent);
+    on<ErrorEvent>(_errorStatusEvent);
+    on<ButtonEvent>(_buttonStatusEvent);
   }
 
   _currentTimeEvent(UpdateTimeEvent event, Emitter<LoginScreenState> emit) {
@@ -15,24 +15,24 @@ class LoginScreenBloc extends Bloc<LoginScreenEvent, LoginScreenState> {
     emit(CurrentTimeState(event.currentTime));
   }
 
-  _enteringPasswordEvent(
-      EnterPasswordEvent event, Emitter<LoginScreenState> emit) {
+  _errorStatusEvent(ErrorEvent event, Emitter<LoginScreenState> emit) {
     final List<String> otp = event.enteredPassword;
-    if ('${otp[0]}${otp[1]}:${otp[2]}${otp[3]}' ==
-            DateFormat.Hm().format(DateTime.now()) ||
-        otp.join('').isEmpty) {
-      emit(PasswordState(true));
+    if (otp.join('').length == 4 &&
+        '${otp[0]}${otp[1]}:${otp[2]}${otp[3]}' !=
+            DateFormat.Hm().format(DateTime.now())) {
+      emit(ErrorState(false));
     } else {
-      emit(PasswordState(false));
+      emit(ErrorState(true));
     }
   }
 
-  _confirmLoginEvent(ConfirmLoginEvent event, Emitter<LoginScreenState> emit) {
-    // Сделать чтобі кнопка тоже меняла стиль
-  }
-
-  String get getCurrentTime {
-    final DateTime now = DateTime.now();
-    return DateFormat.Hm().format(now);
+  _buttonStatusEvent(ButtonEvent event, Emitter<LoginScreenState> emit) {
+    final List<String> otp = event.enteredPassword;
+    if ('${otp[0]}${otp[1]}:${otp[2]}${otp[3]}' ==
+            DateFormat.Hm().format(DateTime.now())) {
+      emit(ButtonState(true));
+    } else {
+      emit(ButtonState(false));
+    }
   }
 }

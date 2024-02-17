@@ -7,12 +7,12 @@ class CurrentTimeState extends LoginScreenState {
   CurrentTimeState(this.currentTime);
 }
 
-class PasswordState extends LoginScreenState {
-  final bool isPasswordTrue;
-  PasswordState(this.isPasswordTrue);
+class ErrorState extends LoginScreenState {
+  final bool errorStatus;
+  ErrorState(this.errorStatus);
 }
 
-class ConfirmButtonState extends LoginScreenState {
+class ButtonState extends LoginScreenState {
   final bool isConfirmLogin;
-  ConfirmButtonState(this.isConfirmLogin);
+  ButtonState(this.isConfirmLogin);
 }

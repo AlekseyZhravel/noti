@@ -20,7 +20,7 @@ class LoginBody extends StatelessWidget {
       bloc.add(UpdateTimeEvent(currentTime: DateTime.now()));
     });
 
-    bool isCurrentPassword = true;
+    bool errorStatus = true;
     bool isActiveButton = false;
 
     return Column(
@@ -63,7 +63,7 @@ class LoginBody extends StatelessWidget {
         ),
         OtpFormWidget(
           onChanged: (otpValue) {
-            bloc.add(EnterPasswordEvent(otpValue));
+            bloc.add(ErrorEvent(otpValue));
           },
         ),
         const Spacer(),
@@ -72,12 +72,12 @@ class LoginBody extends StatelessWidget {
             children: [
               BlocBuilder<LoginScreenBloc, LoginScreenState>(
                 builder: (context, state) {
-                  if (state is PasswordState) {
-                    isCurrentPassword = state.isPasswordTrue;
-                    print(isCurrentPassword);
+                  if (state is ErrorState) {
+                    errorStatus = state.errorStatus;
+                    print(errorStatus);
                   }
                   return Visibility(
-                    visible: !isCurrentPassword,
+                    visible: !errorStatus,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 12.0),
@@ -109,7 +109,7 @@ class LoginBody extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BlocBuilder<LoginScreenBloc, LoginScreenState>(
                   builder: (context, state) {
-                    if (state is ConfirmButtonState) {
+                    if (state is ButtonState) {
                       isActiveButton = state.isConfirmLogin;
                     }
 

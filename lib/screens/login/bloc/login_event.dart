@@ -7,12 +7,12 @@ class UpdateTimeEvent extends LoginScreenEvent {
   UpdateTimeEvent({required this.currentTime});
 }
 
-class EnterPasswordEvent extends LoginScreenEvent {
+class ErrorEvent extends LoginScreenEvent {
   final List<String> enteredPassword;
-  EnterPasswordEvent(this.enteredPassword);
+  ErrorEvent(this.enteredPassword);
 }
 
-class ConfirmLoginEvent extends LoginScreenEvent {
+class ButtonEvent extends LoginScreenEvent {
   final List<String> enteredPassword;
-  ConfirmLoginEvent(this.enteredPassword);
+  ButtonEvent(this.enteredPassword);
 }
